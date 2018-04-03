@@ -9,6 +9,14 @@ using namespace std;
 
 #define NUM_PLAYERS 2
 
+enum RCommands
+{
+	EMPTY, HELLO
+};
+void ReceiveCommands(UdpSocket* sock);
+
+vector<ClientProxy> clients;
+
 int main()
 {
 	UdpSocket socket;
@@ -21,23 +29,50 @@ int main()
 	else
 		cout << "Port ok" << endl;
 
-	//Esperem als clients i ens els guardem a mida que arriven
-	vector<ClientProxy> clients;
-	while (clients.size() < NUM_PLAYERS) {
+	socket.setBlocking(false);	
+
+	//Bucle del joc
+	while (true) {
 		
-		//Esperamos a recibir algo
-		char data[100];
-		sf::IpAddress ipAddr;
-		unsigned short newPort;
-		std::size_t received;
-		if (socket.receive(data, 100, received, ipAddr, newPort) != sf::Socket::Done)
-			cout << "Error al recibir" << endl;
-		else {
-			ClientProxy newClient(ipAddr, newPort);
-			clients.push_back(newClient);
-		}
+		//Comprobamos receive
+		ReceiveCommands(&socket);
+		
+		
+		
 		
 	}
-	
+
 	return 0;
+}
+
+void ReceiveCommands(UdpSocket* sock) {
+	
+	Packet rPack;
+	IpAddress ipAddr;
+	unsigned short newPort;
+	if (sock->receive(rPack, ipAddr, newPort) == sf::Socket::Done) {
+
+		int intCmd;
+		rPack >> intCmd;
+		RCommands cmd = (RCommands)intCmd;
+
+		switch (cmd)
+		{
+		case EMPTY:
+			break;
+		case HELLO:
+
+			rPack >> ipAddr >> newPort;
+			ClientProxy newClient(ipAddr, newPort);
+			clients.push_back(newClient); //nomes afegim si és nou
+										  //enviem welcome al client amb totes les posicions
+										  //enviem als clients ja conectats la nova pos
+			break;
+		default:
+			break;
+		}
+
+	}
+
+	
 }
