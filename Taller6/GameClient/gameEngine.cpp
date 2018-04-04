@@ -71,7 +71,7 @@ void gameEngine::startGame() {
 	sf::Vector2f casillaOrigen, casillaDestino;
 	bool casillaMarcada = false;
 
-	sf::RenderWindow window(sf::VideoMode(512, 512), "El Gato y el Raton");
+	sf::RenderWindow window(sf::VideoMode(640, 640), "MONEY GAME");
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -134,30 +134,17 @@ void gameEngine::startGame() {
 
 		//A partir de aquí es para pintar por pantalla
 		//Este FOR es para el tablero
-		for (int i = 0; i<8; i++)
+		for (int i = 0; i<10; i++)
 		{
-			for (int j = 0; j<8; j++)
+			for (int j = 0; j<10; j++)
 			{
 				sf::RectangleShape rectBlanco(sf::Vector2f(LADO_CASILLA, LADO_CASILLA));
-				rectBlanco.setFillColor(sf::Color::White);
-				if (i % 2 == 0)
-				{
-					//Empieza por el blanco
-					if (j % 2 == 0)
-					{
-						rectBlanco.setPosition(sf::Vector2f(i*LADO_CASILLA, j*LADO_CASILLA));
-						window.draw(rectBlanco);
-					}
-				}
-				else
-				{
-					//Empieza por el negro
-					if (j % 2 == 1)
-					{
-						rectBlanco.setPosition(sf::Vector2f(i*LADO_CASILLA, j*LADO_CASILLA));
-						window.draw(rectBlanco);
-					}
-				}
+
+				rectBlanco.setFillColor(sf::Color::Black);
+				rectBlanco.setOutlineColor(sf::Color::White);
+				rectBlanco.setOutlineThickness(2);
+				rectBlanco.setPosition(sf::Vector2f(i*LADO_CASILLA, j*LADO_CASILLA));
+				window.draw(rectBlanco);
 			}
 		}
 
