@@ -52,7 +52,7 @@ int main()
 		}
 		
 	}
-	
+	//Obrir la mapa
 	game.startGame();
 
 	return 0;

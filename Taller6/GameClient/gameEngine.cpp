@@ -57,6 +57,7 @@ sf::Vector2f BoardToWindows(sf::Vector2f _position)
 * Contiene el código SFML que captura el evento del clic del mouse y el código que pinta por pantalla
 */
 
+Player me;
 
 gameEngine::gameEngine()
 {
@@ -148,42 +149,11 @@ void gameEngine::startGame() {
 			}
 		}
 
-		//TODO: Para pintar el circulito del ratón
-		sf::CircleShape shapeRaton(RADIO_AVATAR);
-		shapeRaton.setFillColor(sf::Color::Blue);
-		sf::Vector2f posicionRaton(4.f, 7.f);
-		posicionRaton = BoardToWindows(posicionRaton);
-		shapeRaton.setPosition(posicionRaton);
-		window.draw(shapeRaton);
-
-		//Pintamos los cuatro circulitos del gato
-		sf::CircleShape shapeGato(RADIO_AVATAR);
-		shapeGato.setFillColor(sf::Color::Red);
-
-		sf::Vector2f positionGato1(1.f, 0.f);
-		positionGato1 = BoardToWindows(positionGato1);
-		shapeGato.setPosition(positionGato1);
-
-		window.draw(shapeGato);
-
-		sf::Vector2f positionGato2(3.f, 0.f);
-		positionGato2 = BoardToWindows(positionGato2);
-		shapeGato.setPosition(positionGato2);
-
-		window.draw(shapeGato);
-
-		sf::Vector2f positionGato3(5.f, 0.f);
-		positionGato3 = BoardToWindows(positionGato3);
-		shapeGato.setPosition(positionGato3);
-
-		window.draw(shapeGato);
-
-		sf::Vector2f positionGato4(7.f, 0.f);
-		positionGato4 = BoardToWindows(positionGato4);
-		shapeGato.setPosition(positionGato4);
-
-		window.draw(shapeGato);
-
+		//draw my pos
+		if (me.receivePos()) {
+			me.setMyPos(3.f, 7.f);
+			window.draw(me.ShowMyPosition(me.getMyPos()));
+		}
 
 		if (!tienesTurno)
 		{

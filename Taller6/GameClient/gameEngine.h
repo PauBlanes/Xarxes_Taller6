@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <SFML/Graphics.hpp>
-
+#include "Player.h"
 
 
 class gameEngine
