@@ -1,22 +1,3 @@
 ﻿  Source.cpp
-c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameserver\source.cpp(65): error C2678: binary '>>': no operator found which takes a left-hand operand of type 'sf::Packet' (or there is no acceptable conversion)
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(192): note: could be 'sf::Packet &sf::Packet::operator >>(sf::String &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(191): note: or       'sf::Packet &sf::Packet::operator >>(std::wstring &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(190): note: or       'sf::Packet &sf::Packet::operator >>(wchar_t *)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(189): note: or       'sf::Packet &sf::Packet::operator >>(std::string &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(188): note: or       'sf::Packet &sf::Packet::operator >>(char *)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(187): note: or       'sf::Packet &sf::Packet::operator >>(double &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(186): note: or       'sf::Packet &sf::Packet::operator >>(float &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(185): note: or       'sf::Packet &sf::Packet::operator >>(sf::Uint64 &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(184): note: or       'sf::Packet &sf::Packet::operator >>(sf::Int64 &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(183): note: or       'sf::Packet &sf::Packet::operator >>(sf::Uint32 &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(182): note: or       'sf::Packet &sf::Packet::operator >>(sf::Int32 &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(181): note: or       'sf::Packet &sf::Packet::operator >>(sf::Uint16 &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(180): note: or       'sf::Packet &sf::Packet::operator >>(sf::Int16 &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(179): note: or       'sf::Packet &sf::Packet::operator >>(sf::Uint8 &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(178): note: or       'sf::Packet &sf::Packet::operator >>(sf::Int8 &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\packet.hpp(177): note: or       'sf::Packet &sf::Packet::operator >>(bool &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\deps64\include\sfml\network\ipaddress.hpp(283): note: or       'std::istream &sf::operator >>(std::istream &,sf::IpAddress &)'
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameserver\source.cpp(65): note: while trying to match the argument list '(sf::Packet, sf::IpAddress)'
-c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameserver\source.cpp(71): error C2361: initialization of 'newClient' is skipped by 'default' label
-  c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameserver\source.cpp(66): note: see declaration of 'newClient'
+  GameServer.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_Taller6\Taller6\x64\Debug\GameServer.exe
+  GameServer.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_Taller6\Taller6\x64\Debug\GameServer.pdb (Partial PDB)

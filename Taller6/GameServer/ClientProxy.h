@@ -5,8 +5,10 @@ using namespace sf;
 
 class ClientProxy {
 private:
+	
+public:
 	IpAddress ip;
 	unsigned short port;
-public:
 	ClientProxy(IpAddress myIp, unsigned short myPort);
+	bool operator==(const ClientProxy& other);
 };
