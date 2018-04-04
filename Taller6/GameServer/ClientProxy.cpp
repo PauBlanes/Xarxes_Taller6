@@ -1,8 +1,9 @@
 #include "ClientProxy.h"
 
-ClientProxy::ClientProxy(IpAddress myIp, unsigned short myPort) {
+ClientProxy::ClientProxy(IpAddress myIp, unsigned short myPort, POSITION pos) {
 	ip = myIp;
 	port = myPort;
+	position = pos;
 }
 
 bool ClientProxy::operator==(const ClientProxy& other) {

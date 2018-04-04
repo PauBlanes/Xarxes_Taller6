@@ -17,20 +17,23 @@ struct POSITION
 class Player
 {
 private:
-	POSITION ActualPos;
-	sf::CircleShape MyPos;
-	bool existPos=false;
+	POSITION position;
+	sf::CircleShape sprite;
+	sf::Color myColor;
 	string  myName;
 public:
 	Player();
+	Player(float x, float y, sf::Color myColor);
 	~Player();
 
-	sf::CircleShape ShowMyPosition(POSITION);
+	bool activated;
+	sf::CircleShape Draw(sf::RenderWindow*);
 	void setMyPos(float,float);
 	POSITION getMyPos();
 	sf::Vector2f BoardToWindows(sf::Vector2f);
 	bool receivePos();
 	void setMyName(string);
 	string getMyName();
+	
 };
 

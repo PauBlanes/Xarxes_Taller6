@@ -42,6 +42,30 @@ sf::Vector2f BoardToWindows(sf::Vector2f _position)
 
 gameEngine::gameEngine()
 {
+	IpAddress ip = IpAddress::getLocalAddress();
+	Packet helloPacket;
+	helloPacket << HELLO;
+	
+	socket.setBlocking(false);
+
+	socket.send(helloPacket, ip, 50000);
+	Clock clock;
+	clock.restart();
+	//Bucle del joc
+	while (!welcome) {
+
+		//Comprovem si hem rebut el welcome
+		ReceiveCommands();
+
+		//Si han passat 500 ms tornem a enviar missatge hello		
+		Time currTime = clock.getElapsedTime();
+		if (currTime.asMilliseconds() >  500) {
+			socket.send(helloPacket, ip, 50000);
+			cout << "sending hello again" << endl;
+			clock.restart();
+		}		
+
+	}
 }
 
 
@@ -58,6 +82,9 @@ void gameEngine::startGame() {
 	sf::RenderWindow window(sf::VideoMode(640, 640), "MONEY GAME");
 	while (window.isOpen())
 	{
+		//comprovem comandos
+		ReceiveCommands();
+
 		sf::Event event;
 
 		//Este primer WHILE es para controlar los eventos del mouse
@@ -138,16 +165,22 @@ void gameEngine::startGame() {
 		}
 
 		//draw my pos
-		//if (me.receivePos()) {
+		
 		//set limit del mapa
 		if (me.getMyPos().x < 0) me.setMyPos(0, me.getMyPos().y);
 		if (me.getMyPos().y < 0) me.setMyPos(me.getMyPos().x, 0);
 		if (me.getMyPos().x > 576) me.setMyPos(576, me.getMyPos().y);
 		if (me.getMyPos().y > 576) me.setMyPos(me.getMyPos().x, 576);
 
-			window.draw(me.ShowMyPosition(me.getMyPos()));
-			
-		//}
+		//Pintar pj
+		if (me.activated)
+			me.Draw(&window);
+		
+		for each (Player p in others)
+		{
+			p.Draw(&window);
+		}
+		
 
 		
 			//en el principio marco con un recuadro amarillo para identificar.
@@ -164,4 +197,52 @@ void gameEngine::startGame() {
 
 		window.display();
 	}
+}
+
+void gameEngine::ReceiveCommands() {
+	Packet rPack;
+	IpAddress ipAddr;
+	unsigned short newPort;
+	
+	if (socket.receive(rPack, ipAddr, newPort) == sf::Socket::Done) {
+		int intCmd;
+		rPack >> intCmd;
+		RCommands cmd = (RCommands)intCmd;
+
+		switch (cmd)
+		{
+		case WC:
+			cout << "benvingut" << endl;
+			welcome = true;
+
+			//setejo la meva pos
+			int newX, newY;
+			rPack >> newX >> newY;
+			me.setMyPos(newX, newY);
+
+			//Setejo la posicio dels altres
+			int numOthers;
+			rPack >> numOthers;
+
+			for (int i = 0; i < numOthers; i++) {
+
+				rPack >> newX >> newY;
+				Player temp(newX, newY, Color::Red);
+
+				others.push_back(temp);
+			}
+
+			//Obrir la mapa
+			startGame();
+
+			break;
+		case NEWPLAYER:
+
+			rPack >> newX >> newY;
+			others.push_back(Player(newX, newY, Color::Red));
+		default:
+			break;
+		}
+	}
+
 }

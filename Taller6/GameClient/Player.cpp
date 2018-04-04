@@ -16,6 +16,13 @@
 
 Player::Player()
 {
+	myColor = sf::Color::Yellow;
+}
+
+Player::Player(float x, float y, sf::Color col)
+{
+	position = { x,y };
+	myColor = col;
 }
 
 
@@ -24,23 +31,27 @@ Player::~Player()
 
 }
 
-sf::CircleShape Player::ShowMyPosition(POSITION p) {
-	MyPos.setRadius(RADIO_AVATAR);
-	MyPos.setFillColor(sf::Color::Yellow);
-	sf::Vector2f M_posicion(p.x,p.y);
+sf::CircleShape Player::Draw(sf::RenderWindow* window) {
+	
+	sprite.setRadius(RADIO_AVATAR);
+	sprite.setFillColor(myColor);
+	sf::Vector2f M_posicion(position.x,position.y);
 	M_posicion = BoardToWindows(M_posicion);
-	MyPos.setPosition(M_posicion);
+	sprite.setPosition(M_posicion);
 
-	return MyPos;
+	window->draw(sprite);
+
+	return sprite;
 }
 
 void Player::setMyPos(float x,float y) {
-	ActualPos = {x,y};
+	position = {x,y};
 	
-	existPos = true;
+	if (!activated)
+		activated = true;
 };
 POSITION Player::getMyPos() {
-	return ActualPos;
+	return position;
 };
 
 sf::Vector2f Player::BoardToWindows(sf::Vector2f _position)
@@ -49,7 +60,7 @@ sf::Vector2f Player::BoardToWindows(sf::Vector2f _position)
 }
 
 bool Player::receivePos() {
-	return existPos;
+	return activated;
 }
 
 void Player::setMyName(string name) {
