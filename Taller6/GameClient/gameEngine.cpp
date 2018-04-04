@@ -38,7 +38,7 @@ sf::Vector2f BoardToWindows(sf::Vector2f _position)
 	return sf::Vector2f(_position.x*LADO_CASILLA + OFFSET_AVATAR, _position.y*LADO_CASILLA + OFFSET_AVATAR);
 }
 
-Player me;
+
 
 gameEngine::gameEngine()
 {
@@ -50,8 +50,7 @@ gameEngine::~gameEngine()
 }
 
 void gameEngine::startGame() {
-	me.setMyPos(3.f, 7.f);
-
+	
 	sf::Vector2f casillaOrigen, casillaDestino;
 	
 	bool casillaMarcada = true;

@@ -7,7 +7,7 @@ class ClientProxy {
 private:
 	
 public:
-	IpAddress ip;
+	IpAddress ip;	
 	unsigned short port;
 	ClientProxy(IpAddress myIp, unsigned short myPort);
 	bool operator==(const ClientProxy& other);

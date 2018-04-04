@@ -52,8 +52,7 @@ int main()
 		}
 		
 	}
-	//Obrir la mapa
-	game.startGame();
+	
 
 	return 0;
 }
@@ -73,7 +72,20 @@ void ReceiveCommands(UdpSocket* sock) {
 		case WC:
 			cout << "benvingut" << endl;
 			welcome = true;
-			//guardar posicions (la primera és la teva)
+
+			//setejo la meva pos
+			int newX, newY;
+			rPack >> newX >> newY;
+			game.me.setMyPos(newX, newY);
+			
+			//Setejo la posicio dels altres
+			int numOthers;
+			rPack >> numOthers;
+			cout << numOthers << endl;
+
+			//Obrir la mapa
+			game.startGame();
+
 			break;
 		default:
 			break;

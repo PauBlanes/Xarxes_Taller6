@@ -79,13 +79,14 @@ void SendCommands(ClientProxy client2Send, SCommands cmd2Send) {
 	case WC:
 		cout << "envio welcome a " << client2Send.ip << ":" << client2Send.port << endl;
 		pack2Send << WC;
-		//afegir posicions inicials al packet
+
+		int newX = 0; int newY = 0;
+		pack2Send << newX << newY;
+		
+		int connectedClients = clients.size();
+		pack2Send << connectedClients;
+
 		socket.send(pack2Send,client2Send.ip, client2Send.port);
-
-		//exemple: envia position
-
-
-
 		break;
 	}
 }
@@ -100,7 +101,7 @@ void AddClientIfNew(ClientProxy newClient) {
 		}
 	}
 	
-	//tant si es nou com si no li enviem el welcome
+	//tant si es nou com si no li enviem el welcome	
 	SendCommands(newClient, WC);	
 	
 	//si es nou l'afegim a l'array
