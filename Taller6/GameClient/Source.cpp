@@ -6,10 +6,10 @@
 using namespace sf;
 using namespace std;
 
-//Utils
+//Utils : important tenir mateix ordre que els del server
 enum RCommands
 {
-	WC
+	WC, NEWPLAYER
 };
 enum SCommands {
 	HELLO
@@ -69,6 +69,7 @@ void ReceiveCommands(UdpSocket* sock) {
 		case WC:
 			cout << "benvingut" << endl;
 			welcome = true;
+			//guardar posicions (la primera és la teva)
 			break;
 		default:
 			break;

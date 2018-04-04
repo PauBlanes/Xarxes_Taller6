@@ -8,12 +8,13 @@ using namespace std;
 
 #define NUM_PLAYERS 2
 
+//Utils : important mantenir mateix ordre que el client
 enum RCommands
 {
 	HELLO
 };
 enum SCommands {
-	WC
+	WC, NEWPLAYER
 };
 void ReceiveCommands();
 void AddClientIfNew(ClientProxy newClient);
@@ -78,6 +79,7 @@ void SendCommands(ClientProxy client2Send, SCommands cmd2Send) {
 	case WC:
 		cout << "envio welcome a " << client2Send.ip << ":" << client2Send.port << endl;
 		pack2Send << WC;
+		//afegir posicions inicials al packet
 		socket.send(pack2Send,client2Send.ip, client2Send.port);
 		break;
 	}
@@ -92,13 +94,19 @@ void AddClientIfNew(ClientProxy newClient) {
 			isNew = false;
 		}
 	}
+	
+	//tant si es nou com si no li enviem el welcome
+	SendCommands(newClient, WC);	
+	
 	//si es nou l'afegim a l'array
 	if (isNew) {
 		cout << "new client " << newClient.ip << ":" << newClient.port << endl;
 		clients.push_back(newClient); //nomes afegim si és nou
 	}
-	//en qualsevol cas li enviem el welcome
-	SendCommands(newClient, WC);
+	else {
+		//enviar als clients ja conectats la posicio d'aquest
+	}
+	
 }
 
 
