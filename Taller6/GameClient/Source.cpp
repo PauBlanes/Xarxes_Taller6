@@ -2,9 +2,13 @@
 #include <iostream>
 #include <SFML\Network.hpp>
 #include <SFML\Graphics.hpp>
+#include "gameEngine.h"
+
 
 using namespace sf;
 using namespace std;
+
+gameEngine game;
 
 //Utils : important tenir mateix ordre que els del server
 enum RCommands
@@ -23,8 +27,7 @@ bool welcome;
 
 int main()
 {
-	
-	
+
 	IpAddress ip = IpAddress::getLocalAddress();
 	Packet helloPacket;
 	helloPacket << HELLO;
@@ -50,6 +53,7 @@ int main()
 		
 	}
 	
+	game.startGame();
 
 	return 0;
 }

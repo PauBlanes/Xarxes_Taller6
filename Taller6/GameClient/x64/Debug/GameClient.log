@@ -1,3 +1,11 @@
-﻿  Source.cpp
-  GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_Taller6\Taller6\x64\Debug\GameClient.exe
-  GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_Taller6\Taller6\x64\Debug\GameClient.pdb (Partial PDB)
+﻿  gameEngine.cpp
+c:\users\bzheng\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(41): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\bzheng\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(42): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\bzheng\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(148): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\bzheng\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(157): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  Generating Code...
+  Compiling...
+  Source.cpp
+  Generating Code...
+  GameClient.vcxproj -> C:\Users\bzheng\Documents\GitHub\Xarxes_Taller6\Taller6\x64\Debug\GameClient.exe
+  GameClient.vcxproj -> C:\Users\bzheng\Documents\GitHub\Xarxes_Taller6\Taller6\x64\Debug\GameClient.pdb (Partial PDB)
