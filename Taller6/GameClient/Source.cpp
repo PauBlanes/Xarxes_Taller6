@@ -6,6 +6,7 @@
 using namespace sf;
 using namespace std;
 
+//Utils
 enum RCommands
 {
 	WC
@@ -14,9 +15,11 @@ enum SCommands {
 	HELLO
 };
 
-bool welcome;
-
+//Funcions
 void ReceiveCommands(UdpSocket* sock);
+
+//Variables per fer conexio
+bool welcome;
 
 int main()
 {
@@ -26,11 +29,25 @@ int main()
 	Packet helloPacket;
 	helloPacket << HELLO;
 	UdpSocket socket;
+	socket.setBlocking(false);
 
-	//Enviem hello fins a rebre el ack
+	//Rutina de conexio
 	socket.send(helloPacket, ip, 50000);
-	while (!welcome) {		
+	Clock clock;
+	clock.restart();
+	while (!welcome) {
+
+		//Comprovem si hem rebut el welcome
 		ReceiveCommands(&socket);
+
+		//Si han passat 500 ms tornem a enviar missatge hello
+		Time currTime = clock.getElapsedTime();		
+		if (currTime.asMilliseconds() >  500) {
+			socket.send(helloPacket, ip, 50000);
+			cout << "sending hello again" << endl;
+			clock.restart();
+		}
+		
 	}
 	
 
