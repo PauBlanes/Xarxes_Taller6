@@ -14,22 +14,7 @@
 #define OFFSET_AVATAR 5
 
 
-
-enum TipoProceso { RATON, GATO, PADRE };
 char tablero[SIZE_TABLERO];
-
-/**
-* Si vale true --> nos permite marcar casilla con el mouse
-* Si vale false --> No podemos interactuar con el tablero y aparece un letrero de "esperando"
-*/
-bool tienesTurno = true;
-
-/**
-* Ahora mismo no tiene efecto, pero luego lo necesitarás para validar los movimientos
-* en función de si eres el gato o el ratón.
-*/
-TipoProceso quienSoy = TipoProceso::RATON;
-
 
 
 /**
@@ -53,10 +38,6 @@ sf::Vector2f BoardToWindows(sf::Vector2f _position)
 	return sf::Vector2f(_position.x*LADO_CASILLA + OFFSET_AVATAR, _position.y*LADO_CASILLA + OFFSET_AVATAR);
 }
 
-/**
-* Contiene el código SFML que captura el evento del clic del mouse y el código que pinta por pantalla
-*/
-
 Player me;
 
 gameEngine::gameEngine()
@@ -69,8 +50,11 @@ gameEngine::~gameEngine()
 }
 
 void gameEngine::startGame() {
+	me.setMyPos(3.f, 7.f);
+
 	sf::Vector2f casillaOrigen, casillaDestino;
-	bool casillaMarcada = false;
+	
+	bool casillaMarcada = true;
 
 	sf::RenderWindow window(sf::VideoMode(640, 640), "MONEY GAME");
 	while (window.isOpen())
@@ -85,12 +69,28 @@ void gameEngine::startGame() {
 			case sf::Event::Closed:
 				window.close();
 				break;
+
+			case sf::Event::KeyPressed:
+				if (event.key.code == sf::Keyboard::A ) {
+					me.setMyPos(me.getMyPos().x-1,me.getMyPos().y);
+				}
+				else if (event.key.code == sf::Keyboard::D) {
+					me.setMyPos(me.getMyPos().x + 1, me.getMyPos().y);
+				}
+				else if (event.key.code == sf::Keyboard::W) {
+					me.setMyPos(me.getMyPos().x, me.getMyPos().y-1);
+				}
+				else if (event.key.code == sf::Keyboard::S) {
+					me.setMyPos(me.getMyPos().x, me.getMyPos().y + 1);
+				}
+			break;
+
 			case sf::Event::MouseButtonPressed:
-				if (event.mouseButton.button == sf::Mouse::Left && tienesTurno)
+				if (event.mouseButton.button == sf::Mouse::Left)
 				{
 					int x = event.mouseButton.x;
 					int y = event.mouseButton.y;
-					if (!casillaMarcada)
+					/*if (!casillaMarcada)
 					{
 						casillaOrigen = TransformaCoordenadaACasilla(x, y);
 						casillaMarcada = true;
@@ -108,23 +108,12 @@ void gameEngine::startGame() {
 						}
 						else
 						{
-							if (quienSoy == TipoProceso::RATON)
-							{
-								//TODO: Validar que el destino del ratón es correcto
-
-								//TODO: Si es correcto, modificar la posición del ratón y enviar las posiciones al padre
-
-							}
-							else if (quienSoy == TipoProceso::GATO)
-							{
-								//TODO: Validar que el destino del gato es correcto
-
-								//TODO: Si es correcto, modificar la posición de la pieza correspondiente del gato y enviar las posiciones al padre
-							}
+							
 						}
-					}
+					}*/
 				}
 				break;
+
 			default:
 				break;
 
@@ -150,42 +139,29 @@ void gameEngine::startGame() {
 		}
 
 		//draw my pos
-		if (me.receivePos()) {
-			me.setMyPos(3.f, 7.f);
+		//if (me.receivePos()) {
+		//set limit del mapa
+		if (me.getMyPos().x < 0) me.setMyPos(0, me.getMyPos().y);
+		if (me.getMyPos().y < 0) me.setMyPos(me.getMyPos().x, 0);
+		if (me.getMyPos().x > 576) me.setMyPos(576, me.getMyPos().y);
+		if (me.getMyPos().y > 576) me.setMyPos(me.getMyPos().x, 576);
+
 			window.draw(me.ShowMyPosition(me.getMyPos()));
-		}
+			
+		//}
 
-		if (!tienesTurno)
-		{
-			//Si no tengo el turno, pinto un letrerito de "Esperando..."
-			sf::Font font;
-			std::string pathFont = "liberation_sans/LiberationSans-Regular.ttf";
-			if (!font.loadFromFile(pathFont))
-			{
-				std::cout << "No se pudo cargar la fuente" << std::endl;
-			}
-
-
-			sf::Text textEsperando("Esperando...", font);
-			textEsperando.setPosition(sf::Vector2f(180, 200));
-			textEsperando.setCharacterSize(30);
-			textEsperando.setStyle(sf::Text::Bold);
-			textEsperando.setFillColor(sf::Color::Green);
-			window.draw(textEsperando);
-		}
-		else
-		{
-			//Si tengo el turno y hay una casilla marcada, la marco con un recuadro amarillo.
+		
+			//en el principio marco con un recuadro amarillo para identificar.
 			if (casillaMarcada)
 			{
 				sf::RectangleShape rect(sf::Vector2f(LADO_CASILLA, LADO_CASILLA));
-				rect.setPosition(sf::Vector2f(casillaOrigen.x*LADO_CASILLA, casillaOrigen.y*LADO_CASILLA));
+				rect.setPosition(sf::Vector2f(me.getMyPos().x*LADO_CASILLA, me.getMyPos().y*LADO_CASILLA));
 				rect.setFillColor(sf::Color::Transparent);
 				rect.setOutlineThickness(5);
 				rect.setOutlineColor(sf::Color::Yellow);
 				window.draw(rect);
 			}
-		}
+		
 
 		window.display();
 	}

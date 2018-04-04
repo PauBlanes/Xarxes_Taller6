@@ -81,6 +81,11 @@ void SendCommands(ClientProxy client2Send, SCommands cmd2Send) {
 		pack2Send << WC;
 		//afegir posicions inicials al packet
 		socket.send(pack2Send,client2Send.ip, client2Send.port);
+
+		//exemple: envia position
+
+
+
 		break;
 	}
 }

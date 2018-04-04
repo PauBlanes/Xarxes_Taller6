@@ -36,6 +36,7 @@ sf::CircleShape Player::ShowMyPosition(POSITION p) {
 
 void Player::setMyPos(float x,float y) {
 	ActualPos = {x,y};
+	
 	existPos = true;
 };
 POSITION Player::getMyPos() {
@@ -49,4 +50,12 @@ sf::Vector2f Player::BoardToWindows(sf::Vector2f _position)
 
 bool Player::receivePos() {
 	return existPos;
+}
+
+void Player::setMyName(string name) {
+	myName = name;
+}
+
+string Player::getMyName() {
+	return myName;
 }

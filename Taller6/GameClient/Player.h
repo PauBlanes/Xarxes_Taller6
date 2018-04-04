@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include <string>
+
+using namespace std;
 
 struct POSITION
 {
@@ -17,7 +20,7 @@ private:
 	POSITION ActualPos;
 	sf::CircleShape MyPos;
 	bool existPos=false;
-
+	string  myName;
 public:
 	Player();
 	~Player();
@@ -27,5 +30,7 @@ public:
 	POSITION getMyPos();
 	sf::Vector2f BoardToWindows(sf::Vector2f);
 	bool receivePos();
+	void setMyName(string);
+	string getMyName();
 };
 
