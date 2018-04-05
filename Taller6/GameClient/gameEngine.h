@@ -7,24 +7,17 @@
 #include <signal.h>
 #include <stdio.h>
 #include "Player.h"
+#include "GeneralInfo.h"
 
 using namespace sf;
 using namespace std;
-
-//Utils : important tenir mateix ordre que els del server
-enum RCommands
-{
-	WC, NEWPLAYER
-};
-enum SCommands {
-	HELLO
-};
 
 class gameEngine
 {
 private:
 	bool welcome;
 	UdpSocket socket;
+	string nick;
 public:
 	Player me;
 	vector<Player> others;
@@ -32,5 +25,7 @@ public:
 	~gameEngine();
 	void startGame();	
 	void ReceiveCommands();
+	void SendCommands(PacketType cmd); //FER RANDOM PER NOMES ENVIAR A VEGADES
+	void SendACK(int msgId);
 };
 

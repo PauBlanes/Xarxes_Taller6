@@ -42,10 +42,14 @@ sf::Vector2f BoardToWindows(sf::Vector2f _position)
 
 gameEngine::gameEngine()
 {
+
+	cout << "Write your username : " << endl;
+	cin >> nick;
+
 	IpAddress ip = IpAddress::getLocalAddress();
 	Packet helloPacket;
 	helloPacket << HELLO;
-	
+	helloPacket << nick;
 	socket.setBlocking(false);
 
 	socket.send(helloPacket, ip, 50000);
@@ -207,7 +211,7 @@ void gameEngine::ReceiveCommands() {
 	if (socket.receive(rPack, ipAddr, newPort) == sf::Socket::Done) {
 		int intCmd;
 		rPack >> intCmd;
-		RCommands cmd = (RCommands)intCmd;
+		PacketType cmd = (PacketType)intCmd;
 
 		switch (cmd)
 		{
@@ -237,12 +241,23 @@ void gameEngine::ReceiveCommands() {
 
 			break;
 		case NEWPLAYER:
-
+			//guardem id del msg
+			int packetId;
+			rPack >> packetId;
+			
+			//ens guardem el nou jugador
 			rPack >> newX >> newY;
 			others.push_back(Player(newX, newY, Color::Red));
+
+			SendACK(packetId);
 		default:
 			break;
 		}
 	}
 
 }
+void gameEngine::SendACK(int msgId) {
+	Packet p2Send;
+	p2Send << ACK << msgId;
+}
+
