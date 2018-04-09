@@ -18,13 +18,9 @@ void ClientProxy::ResendMsgs(UdpSocket* sock) {
 		for (map<int, BufferAndLength>::iterator it = msgs2Resend.begin(); it != msgs2Resend.end(); ++it)
 		{
 			cout << "resending msgs to " << ip << ":" << port << endl;			
-			sock->send(it->second.buffer, it->second.length, ip, port);
+			Send(sock, it->second.buffer, it->second.length);
 		}
-		/*for each (Packet p in unrespondedMsgs)
-		{
-			cout << "resending msgs to " << ip << ":" << port << endl;
-			sock->send(p, ip, port);
-		}*/
+		
 		resendClock.restart();
 	}
 	
@@ -35,16 +31,9 @@ void ClientProxy::MesageResponded(int idToErase) {
 	std::map<int, BufferAndLength>::iterator it = msgs2Resend.find(idToErase);
 	if (it != msgs2Resend.end())
 		msgs2Resend.erase(it);
+		
+}
 
-	
-	/*for (int i = 0; i < unrespondedMsgs.size(); i++) {
-		Packet currPacket = unrespondedMsgs[i];
-		int pType;
-		int id;
-		currPacket >> pType >> id;
-		if (id == idToErase) { //borrem el misatge amb id que li hem passat
-			unrespondedMsgs.erase(unrespondedMsgs.begin() + i);
-			return;
-		}
-	}*/
+void ClientProxy::Send(UdpSocket* sock, char* buffer, int length) {
+	sock->send(buffer, length, ip, port);
 }

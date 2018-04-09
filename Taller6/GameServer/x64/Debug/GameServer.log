@@ -1,7 +1,9 @@
 ﻿  Source.cpp
-c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameserver\source.cpp(69): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
-c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameserver\source.cpp(126): warning C4838: conversion from 'uint32_t' to 'int' requires a narrowing conversion
-c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameserver\source.cpp(146): warning C4838: conversion from 'uint32_t' to 'int' requires a narrowing conversion
-c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameserver\source.cpp(189): warning C4715: 'FindClient': not all control paths return a value
+c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameserver\source.cpp(68): warning C4267: 'argument': conversion from 'size_t' to 'uint32_t', possible loss of data
+c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameserver\source.cpp(125): warning C4838: conversion from 'uint32_t' to 'int' requires a narrowing conversion
+c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameserver\source.cpp(145): warning C4838: conversion from 'uint32_t' to 'int' requires a narrowing conversion
+  ClientProxy.cpp
+  Generating Code...
+c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameserver\source.cpp(188): warning C4715: 'FindClient': not all control paths return a value
   GameServer.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_Taller6\Taller6\x64\Debug\GameServer.exe
   GameServer.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_Taller6\Taller6\x64\Debug\GameServer.pdb (Partial PDB)

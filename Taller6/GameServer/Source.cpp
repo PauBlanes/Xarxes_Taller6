@@ -15,7 +15,6 @@ void ReceiveCommands();
 void AddClientIfNew(ClientProxy newClient);
 void SendCommands(ClientProxy client2Send,PacketType cmd2Send);
 ClientProxy FindClient(IpAddress ip, unsigned short port);
-void Send(char* msg, int len, IpAddress ip, unsigned short port);
 
 vector<ClientProxy> clients;
 UdpSocket socket;
@@ -120,7 +119,7 @@ void SendCommands(ClientProxy client2Send, PacketType cmd2Send) {
 			oms.Write((uint8_t)clients[i].position.y);
 		}
 
-		Send(oms.GetBufferPtr(), oms.GetLength(), client2Send.ip, client2Send.port);
+		client2Send.Send(&socket, oms.GetBufferPtr(), oms.GetLength());
 
 		//ja que es un missatge critic l'afegim al array dels que esperen resposta
 		BufferAndLength temp = { oms.GetBufferPtr(), oms.GetLength() };
@@ -140,7 +139,7 @@ void SendCommands(ClientProxy client2Send, PacketType cmd2Send) {
 		oms.Write((uint8_t)clients[clients.size() - 1].position.x);
 		oms.Write((uint8_t)clients[clients.size() - 1].position.y);
 		
-		Send(oms.GetBufferPtr(), oms.GetLength(), client2Send.ip, client2Send.port);
+		client2Send.Send(&socket, oms.GetBufferPtr(), oms.GetLength());
 
 		//ja que es un missatge critic l'afegim al array dels que esperen resposta
 		BufferAndLength temp = { oms.GetBufferPtr(), oms.GetLength() };
@@ -188,9 +187,7 @@ ClientProxy FindClient(IpAddress ip, unsigned short port) {
 	}
 }
 
-void Send(char* msg, int len, IpAddress ip, unsigned short port) {
-	socket.send(msg, len, ip, port);
-}
+
 
 
 

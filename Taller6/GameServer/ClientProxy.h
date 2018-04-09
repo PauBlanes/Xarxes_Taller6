@@ -32,4 +32,5 @@ public:
 	bool operator==(const ClientProxy& other);
 	void ResendMsgs(UdpSocket* sock);
 	void MesageResponded(int id);
+	void Send(UdpSocket* sock, char* buffer, int length);
 };
