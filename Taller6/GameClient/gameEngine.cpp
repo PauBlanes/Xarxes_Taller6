@@ -43,19 +43,21 @@ sf::Vector2f BoardToWindows(sf::Vector2f _position)
 gameEngine::gameEngine()
 {
 
-	cout << "Write your username : " << endl;
-	cin >> nick;
+	//cout << "Write your username : " << endl;
+	//cin >> nick;
 
-	IpAddress ip = IpAddress::getLocalAddress();
+	socket.setBlocking(false);
+
+	ip = IpAddress::getLocalAddress();
+	
 	//Packet helloPacket;
 	//helloPacket << HELLO;
 	//helloPacket << nick;
 	OutputMemoryStream oms;
 	oms.Write((uint8_t)PacketType::HELLO);
-	oms.WriteString(nick);
-	socket.setBlocking(false);
-
-	socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, 50000);
+	//oms.WriteString(nick);
+	
+	socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
 	//socket.send(helloPacket, ip, 50000);
 	Clock clock;
 	clock.restart();
@@ -210,60 +212,91 @@ void gameEngine::startGame() {
 }
 
 void gameEngine::ReceiveCommands() {
-	Packet rPack;
+	//Packet rPack;
 	IpAddress ipAddr;
 	unsigned short newPort;
+
+	char rMsg[100];
+	size_t received;	
 	
-	if (socket.receive(rPack, ipAddr, newPort) == sf::Socket::Done) {
-		int intCmd;
-		rPack >> intCmd;
-		PacketType cmd = (PacketType)intCmd;
+	if (socket.receive(rMsg, 100, received, ipAddr, newPort) == sf::Socket::Done) {
+	//if (socket.receive(rPack, ipAddr, newPort) == sf::Socket::Done) {
+		//int intCmd;
+		//rPack >> intCmd;
+		//PacketType cmd = (PacketType)intCmd;
+
+		InputMemoryStream ims(rMsg, received);
+		uint8_t cmdInt;
+		ims.Read(&cmdInt);
+		PacketType cmd = (PacketType)cmdInt;
 
 		switch (cmd)
 		{
 		case WC:
+		{
 			cout << "benvingut" << endl;
 			welcome = true;
 
+			//guardem id del msg
+			uint8_t packetId;
+			ims.Read(&packetId);
+
 			//setejo la meva pos
-			int newX, newY;
-			rPack >> newX >> newY;
+			uint8_t newX, newY;
+			ims.Read(&newX);
+			ims.Read(&newY);
 			me.setMyPos(newX, newY);
 
 			//Setejo la posicio dels altres
-			int numOthers;
-			rPack >> numOthers;
-
+			uint8_t numOthers;
+			ims.Read(&numOthers);
 			for (int i = 0; i < numOthers; i++) {
 
-				rPack >> newX >> newY;
+				ims.Read(&newX);
+				ims.Read(&newY);
 				Player temp(newX, newY, Color::Red);
 
 				others.push_back(temp);
 			}
 
+			SendACK(packetId);
+
 			//Obrir la mapa
 			startGame();
 
 			break;
+		}
 		case NEWPLAYER:
+		{
 			//guardem id del msg
-			int packetId;
-			rPack >> packetId;
-			
+			uint8_t packetId;
+			ims.Read(&packetId);
+
 			//ens guardem el nou jugador
-			rPack >> newX >> newY;
+			uint8_t newX, newY;
+			ims.Read(&newX);
+			ims.Read(&newY);
 			others.push_back(Player(newX, newY, Color::Red));
 
 			SendACK(packetId);
-		default:
+
 			break;
+		}
+		default:
+			break;		
 		}
 	}
 
 }
 void gameEngine::SendACK(int msgId) {
-	Packet p2Send;
-	p2Send << ACK << msgId;
+	
+	OutputMemoryStream oms;
+	oms.Write((uint8_t)PacketType::ACK);
+	oms.Write((uint8_t)msgId);
+	
+	//Packet p2Send;
+	//p2Send << ACK << msgId;
+
+	socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
 }
 

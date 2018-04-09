@@ -85,5 +85,9 @@ public:
 		Write(_inString.size());
 		Write(_inString.c_str(), _inString.size());
 	}
+
+	uint32_t max(uint32_t a, uint32_t b) {
+		return (((a) > (b)) ? (a) : (b));
+	}
 };
 

@@ -14,18 +14,30 @@ bool ClientProxy::operator==(const ClientProxy& other) {
 }
 void ClientProxy::ResendMsgs(UdpSocket* sock) {
 	Time currTime = resendClock.getElapsedTime();
-	if (currTime.asMilliseconds() >  RESEND_TIME && !unrespondedMsgs.empty()) {		
-		for each (Packet p in unrespondedMsgs)
+	if (currTime.asMilliseconds() >  RESEND_TIME) {		
+		for (map<int, BufferAndLength>::iterator it = msgs2Resend.begin(); it != msgs2Resend.end(); ++it)
+		{
+			cout << "resending msgs to " << ip << ":" << port << endl;			
+			sock->send(it->second.buffer, it->second.length, ip, port);
+		}
+		/*for each (Packet p in unrespondedMsgs)
 		{
 			cout << "resending msgs to " << ip << ":" << port << endl;
 			sock->send(p, ip, port);
-		}
+		}*/
 		resendClock.restart();
 	}
 	
 }
 void ClientProxy::MesageResponded(int idToErase) {
-	for (int i = 0; i < unrespondedMsgs.size(); i++) {
+	
+	cout << "received confirmation for msg : " << idToErase << ", erasing msg." << endl;
+	std::map<int, BufferAndLength>::iterator it = msgs2Resend.find(idToErase);
+	if (it != msgs2Resend.end())
+		msgs2Resend.erase(it);
+
+	
+	/*for (int i = 0; i < unrespondedMsgs.size(); i++) {
 		Packet currPacket = unrespondedMsgs[i];
 		int pType;
 		int id;
@@ -34,5 +46,5 @@ void ClientProxy::MesageResponded(int idToErase) {
 			unrespondedMsgs.erase(unrespondedMsgs.begin() + i);
 			return;
 		}
-	}
+	}*/
 }

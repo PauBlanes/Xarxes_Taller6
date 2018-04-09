@@ -13,11 +13,17 @@ struct POSITION
 	int x, y;
 };
 
+struct BufferAndLength {
+	char* buffer;
+	int length;
+};
+
 class ClientProxy {
-private:
-	vector<Packet>unrespondedMsgs;
+private:	
 	Clock resendClock;
 public:
+	//vector<Packet>unrespondedMsgs;
+	map<int, BufferAndLength> msgs2Resend;
 	POSITION position;
 	IpAddress ip;	
 	unsigned short port;

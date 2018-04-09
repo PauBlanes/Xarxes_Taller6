@@ -4,6 +4,7 @@
 #include "ClientProxy.h"
 #include "GeneralInfo.h"
 #include "InputMemoryStream.h"
+#include "OutputMemoryStream.h"
 
 using namespace sf;
 using namespace std;
@@ -14,6 +15,7 @@ void ReceiveCommands();
 void AddClientIfNew(ClientProxy newClient);
 void SendCommands(ClientProxy client2Send,PacketType cmd2Send);
 ClientProxy FindClient(IpAddress ip, unsigned short port);
+void Send(char* msg, int len, IpAddress ip, unsigned short port);
 
 vector<ClientProxy> clients;
 UdpSocket socket;
@@ -21,7 +23,7 @@ UdpSocket socket;
 int posIndex;//temporalment per decidir les posicions
 
 //Per controlar acknowledge
-int packetId;
+uint8_t packetId; 
 
 int main()
 {	
@@ -54,41 +56,34 @@ int main()
 	return 0;
 }
 
-void ReceiveCommands() {
+void ReceiveCommands() {	
 	
-	Packet rPack;
 	IpAddress ipAddr;
 	unsigned short newPort;
 
 	char rMsg[100];	
 	size_t received;
 
-	//if (socket.receive(rPack, ipAddr, newPort) == sf::Socket::Done) {
 	if (socket.receive(rMsg, 100, received, ipAddr, newPort) == sf::Socket::Done) {
 		
-		InputMemoryStream ims(rMsg, received);
-		PacketType cmd;
-		ims.Read(&cmd);
-		
-		//int intCmd;
-		//rPack >> intCmd;
-		//PacketType cmd = (PacketType)intCmd;
-		
+		InputMemoryStream ims(rMsg, received);		
+		uint8_t cmdInt;		
+		ims.Read(&cmdInt);
+		PacketType cmd = (PacketType)cmdInt;
+				
 		switch (cmd)
 		{		
 		case HELLO:
-		{
-			cout << "es bien" << endl;
-			/*string n;
-			rPack >> n;
-			AddClientIfNew(ClientProxy(ipAddr, newPort, { posIndex, posIndex }, n));*/
+		{			
+			string n = "";		
+			//AQUI FALTA REBRE EL STRING
+			AddClientIfNew(ClientProxy(ipAddr, newPort, { posIndex, posIndex }, n));
 			break;
 		}
 		case ACK:
 			//ens guardem id de missatge
-			int msgId;
-			rPack >> msgId;
-			
+			uint8_t msgId;			
+			ims.Read(&msgId);
 			//borrem el missatge amb aquest id de la llista de msg que esperen ack
 			FindClient(ipAddr, newPort).MesageResponded(msgId);
 			
@@ -96,44 +91,64 @@ void ReceiveCommands() {
 		default:
 			break;
 		}
-
-	}
-
-	
+	}	
 }
 
 void SendCommands(ClientProxy client2Send, PacketType cmd2Send) {
 	
 	//FER RANDOM PER NOMES ENVIAR A VEGADES
-	Packet pack2Send;
+	
+	OutputMemoryStream oms;
 	
 	switch (cmd2Send) {
 	case WC:
-		cout << "envio welcome a " << client2Send.nick << client2Send.ip << ":" << client2Send.port << endl;
-		pack2Send << WC;
+	{
+		cout << "envio welcome a " << client2Send.nick << client2Send.ip << ":" << client2Send.port << "|| msgId : " << (int)packetId << endl;
 		
-		//afegim la nostra pos
-		int newX, newY;
-		pack2Send << client2Send.position.x << client2Send.position.y;
-		posIndex++;
-		
-		//afegim el numero de jugadors		
-		pack2Send << (int)clients.size();
-
+		//La capcelera
+		oms.Write((uint8_t)PacketType::WC);
+		oms.Write(packetId);
+		//afegim la nostra pos		
+		oms.Write((uint8_t)client2Send.position.x);
+		oms.Write((uint8_t)client2Send.position.y);
+		posIndex++;//per anar-los posant en diagonal
+		//afegim el numero de jugadors
+		oms.Write((uint8_t)clients.size());
 		//afegim la resta de jugadors
-		for (int i = 0; i < clients.size(); i++) {					
-			pack2Send << clients[i].position.x << clients[i].position.y;			
+		for (int i = 0; i < clients.size(); i++) {
+			oms.Write((uint8_t)clients[i].position.x);
+			oms.Write((uint8_t)clients[i].position.y);
 		}
 
-		socket.send(pack2Send,client2Send.ip, client2Send.port);
+		Send(oms.GetBufferPtr(), oms.GetLength(), client2Send.ip, client2Send.port);
+
+		//ja que es un missatge critic l'afegim al array dels que esperen resposta
+		BufferAndLength temp = { oms.GetBufferPtr(), oms.GetLength() };
+		client2Send.msgs2Resend[packetId] = temp;
+		packetId++;
+
 		break;
+	}
 	case NEWPLAYER:
-		cout << "envio newPlayer a " << client2Send.nick << client2Send.ip << ":" << client2Send.port << endl;
-		pack2Send << NEWPLAYER;
-		pack2Send << packetId; packetId++; //per saber despres el acknowledge a quin misatge respon
-		pack2Send << clients[clients.size()-1].position.x << clients[clients.size() - 1].position.y;
-		socket.send(pack2Send, client2Send.ip, client2Send.port);
+	{
+		cout << "envio newPlayer a " << client2Send.nick << client2Send.ip << ":" << client2Send.port << "|| msgId : " << (int)packetId << endl;
+		
+		//La capcelera
+		oms.Write((uint8_t)PacketType::NEWPLAYER);		
+		oms.Write(packetId);
+		//Afegim la pos
+		oms.Write((uint8_t)clients[clients.size() - 1].position.x);
+		oms.Write((uint8_t)clients[clients.size() - 1].position.y);
+		
+		Send(oms.GetBufferPtr(), oms.GetLength(), client2Send.ip, client2Send.port);
+
+		//ja que es un missatge critic l'afegim al array dels que esperen resposta
+		BufferAndLength temp = { oms.GetBufferPtr(), oms.GetLength() };
+		client2Send.msgs2Resend[packetId] = temp;
+		packetId++;
+
 		break;
+	}
 	default:
 		break;
 	}
@@ -172,6 +187,11 @@ ClientProxy FindClient(IpAddress ip, unsigned short port) {
 			return cP;
 	}
 }
+
+void Send(char* msg, int len, IpAddress ip, unsigned short port) {
+	socket.send(msg, len, ip, port);
+}
+
 
 
 

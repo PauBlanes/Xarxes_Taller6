@@ -36,6 +36,7 @@ public:
 
 		//Avanzo mHead para el siguiente Read.
 		mHead = resultHead;
+		
 	}
 
 	template<typename T> void Read(T* _outData)
@@ -57,7 +58,7 @@ public:
 		Read(&elementCount);
 		//Recuperamos todas las posiciones y las copiamos en el vector.
 		for (size_t i = 0; i < elementCount; i++)
-		{
+		{			
 			T element;
 			Read(&element);
 			_outVector->push_back(element);
@@ -73,12 +74,12 @@ public:
 		Read(&length);
 		//Reservamos memoria para un char* y lo recuperamos con la función genérica.
 		char* buffer = new char[length + 1];
-		Read(buffer, length);
+		Read(buffer, length);		
 		buffer[length] = '\0';
 
 		//Construimos el string a partir del buffer
 		std::string str = std::string(buffer);
-		//Liberamos memoria
+		//Liberamos memoria		
 		delete[] buffer;
 		return str;
 	}
