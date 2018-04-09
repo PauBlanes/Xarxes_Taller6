@@ -36,7 +36,7 @@ public:
 	string nick;
 	int numPing;
 	
-
+	ClientProxy();
 	ClientProxy(IpAddress myIp, unsigned short myPort, POSITION pos, string n);
 	bool operator==(const ClientProxy& other);
 	void ResendMsgs(UdpSocket* sock);

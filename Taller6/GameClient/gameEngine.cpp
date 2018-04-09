@@ -250,7 +250,7 @@ void gameEngine::ReceiveCommands() {
 			//Setejo la posicio dels altres
 			uint8_t numOthers;
 			ims.Read(&numOthers);
-			for (int i = 0; i < numOthers; i++) {
+			for (int i = 0; i < (int)numOthers; i++) {
 
 				ims.Read(&newX);
 				ims.Read(&newY);

@@ -1,5 +1,7 @@
 #include "ClientProxy.h"
 
+ClientProxy::ClientProxy(){}
+
 ClientProxy::ClientProxy(IpAddress myIp, unsigned short myPort, POSITION pos, string n) {
 	ip = myIp;
 	port = myPort;
@@ -29,10 +31,10 @@ void ClientProxy::ResendMsgs(UdpSocket* sock) {
 void ClientProxy::MesageResponded(int idToErase) {
 	
 	cout << "received confirmation for msg : " << idToErase << ", erasing msg." << endl;
-	std::map<int, BufferAndLength>::iterator it = msgs2Resend.find(idToErase);
-	if (it != msgs2Resend.end())
-		msgs2Resend.erase(it);
-		
+	//map<int, BufferAndLength>::iterator it = msgs2Resend.find(idToErase);
+	//if (it != msgs2Resend.end())
+		//msgs2Resend.erase(it);
+			
 }
 
 void ClientProxy::Send(UdpSocket* sock, char* buffer, int length) {
@@ -40,7 +42,7 @@ void ClientProxy::Send(UdpSocket* sock, char* buffer, int length) {
 	srand(time(NULL));
 	int rnd = rand() % 100 + 1;
 
-	if (rnd > PERCENT_LOSS)
+	if (rnd > 0)
 		sock->send(buffer, length, ip, port);
 }
 
