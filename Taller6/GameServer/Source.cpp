@@ -15,14 +15,17 @@ void ReceiveCommands();
 void AddClientIfNew(ClientProxy newClient);
 void SendCommands(ClientProxy client2Send,PacketType cmd2Send);
 ClientProxy FindClient(IpAddress ip, unsigned short port);
+void PingRoutine();
 
 vector<ClientProxy> clients;
 UdpSocket socket;
 
-int posIndex;//temporalment per decidir les posicions
+uint8_t posIndex;//temporalment per decidir les posicions
 
 //Per controlar acknowledge
 uint8_t packetId; 
+
+Clock pingClock;
 
 int main()
 {	
@@ -48,7 +51,10 @@ int main()
 		for each (ClientProxy cP in clients)
 		{
 			cP.ResendMsgs(&socket);
-		}	
+			cout << cP.numPing << endl;
+		}
+		//Enviem el ping
+		PingRoutine();
 		
 	}
 
@@ -94,29 +100,27 @@ void ReceiveCommands() {
 }
 
 void SendCommands(ClientProxy client2Send, PacketType cmd2Send) {
-	
-	//FER RANDOM PER NOMES ENVIAR A VEGADES
-	
+		
 	OutputMemoryStream oms;
 	
 	switch (cmd2Send) {
 	case WC:
 	{
-		cout << "envio welcome a " << client2Send.nick << client2Send.ip << ":" << client2Send.port << "|| msgId : " << (int)packetId << endl;
+		cout << "envio welcome a " << client2Send.ip << ":" << client2Send.port << "|| msgId : " << (int)packetId << endl;
 		
 		//La capcelera
 		oms.Write((uint8_t)PacketType::WC);
 		oms.Write(packetId);
 		//afegim la nostra pos		
-		oms.Write((uint8_t)client2Send.position.x);
-		oms.Write((uint8_t)client2Send.position.y);
+		oms.Write(client2Send.position.x);
+		oms.Write(client2Send.position.y);
 		posIndex++;//per anar-los posant en diagonal
 		//afegim el numero de jugadors
 		oms.Write((uint8_t)clients.size());
 		//afegim la resta de jugadors
 		for (int i = 0; i < clients.size(); i++) {
-			oms.Write((uint8_t)clients[i].position.x);
-			oms.Write((uint8_t)clients[i].position.y);
+			oms.Write(clients[i].position.x);
+			oms.Write(clients[i].position.y);
 		}
 
 		client2Send.Send(&socket, oms.GetBufferPtr(), oms.GetLength());
@@ -130,14 +134,14 @@ void SendCommands(ClientProxy client2Send, PacketType cmd2Send) {
 	}
 	case NEWPLAYER:
 	{
-		cout << "envio newPlayer a " << client2Send.nick << client2Send.ip << ":" << client2Send.port << "|| msgId : " << (int)packetId << endl;
+		cout << "envio newPlayer a "  << client2Send.ip << ":" << client2Send.port << "|| msgId : " << (int)packetId << endl;
 		
 		//La capcelera
 		oms.Write((uint8_t)PacketType::NEWPLAYER);		
 		oms.Write(packetId);
 		//Afegim la pos
-		oms.Write((uint8_t)clients[clients.size() - 1].position.x);
-		oms.Write((uint8_t)clients[clients.size() - 1].position.y);
+		oms.Write(clients[clients.size() - 1].position.x);
+		oms.Write(clients[clients.size() - 1].position.y);
 		
 		client2Send.Send(&socket, oms.GetBufferPtr(), oms.GetLength());
 
@@ -145,8 +149,20 @@ void SendCommands(ClientProxy client2Send, PacketType cmd2Send) {
 		BufferAndLength temp = { oms.GetBufferPtr(), oms.GetLength() };
 		client2Send.msgs2Resend[packetId] = temp;
 		packetId++;
-
+				
 		break;
+	}
+	case PING:
+	{
+		//La capcelera
+		oms.Write((uint8_t)PacketType::PING);
+		oms.Write(packetId);
+
+		client2Send.Send(&socket, oms.GetBufferPtr(), oms.GetLength());
+
+		//sumem al num de ping
+		
+		
 	}
 	default:
 		break;
@@ -164,13 +180,15 @@ void AddClientIfNew(ClientProxy newClient) {
 	}
 	
 	//tant si es nou com si no li enviem el welcome	
-	SendCommands(newClient, WC);	
+	SendCommands(newClient, WC);
+	
 	
 	//si es nou l'afegim a l'array i enviem pos als altres
 	if (isNew) {
 				
 		cout << "new client " << newClient.ip << ":" << newClient.port << endl;
 		clients.push_back(newClient); //nomes afegim si és nou
+		posIndex++;//per anar-los posant en diagonal				  
 
 		for (int i = 0; i < clients.size() - 1; i++) { //Per enviar a tots menys lultim i no ho posem abans del pushback per poder agafar la pos daquest client des del array de clients
 			SendCommands(clients[i], NEWPLAYER);
@@ -184,6 +202,22 @@ ClientProxy FindClient(IpAddress ip, unsigned short port) {
 	{
 		if (cP.ip == ip && cP.port == port)
 			return cP;
+	}
+}
+
+void PingRoutine() {
+
+	//comprovem pings no respostos
+
+	Time currTime = pingClock.getElapsedTime();
+	if (currTime.asMilliseconds() >  PING_TIME) {
+		OutputMemoryStream oms;
+		for each (ClientProxy cP in clients)
+		{
+			SendCommands(cP, PING);
+		}
+		
+		pingClock.restart();
 	}
 }
 

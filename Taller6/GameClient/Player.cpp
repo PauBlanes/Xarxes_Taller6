@@ -19,7 +19,7 @@ Player::Player()
 	myColor = sf::Color::Yellow;
 }
 
-Player::Player(float x, float y, sf::Color col)
+Player::Player(uint8_t x, uint8_t y, sf::Color col)
 {
 	position = { x,y };
 	myColor = col;
@@ -44,7 +44,7 @@ sf::CircleShape Player::Draw(sf::RenderWindow* window) {
 	return sprite;
 }
 
-void Player::setMyPos(float x,float y) {
+void Player::setMyPos(uint8_t x, uint8_t y) {
 	position = {x,y};
 	
 	if (!activated)

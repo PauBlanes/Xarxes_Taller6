@@ -11,7 +11,7 @@ using namespace std;
 
 struct POSITION
 {
-	float x, y;
+	uint8_t x, y;
 };
 
 class Player
@@ -23,12 +23,12 @@ private:
 	string  myName;
 public:
 	Player();
-	Player(float x, float y, sf::Color myColor);
+	Player(uint8_t x, uint8_t y, sf::Color myColor);
 	~Player();
 
 	bool activated;
 	sf::CircleShape Draw(sf::RenderWindow*);
-	void setMyPos(float,float);
+	void setMyPos(uint8_t, uint8_t);
 	POSITION getMyPos();
 	sf::Vector2f BoardToWindows(sf::Vector2f);
 	bool receivePos();

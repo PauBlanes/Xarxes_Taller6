@@ -293,9 +293,6 @@ void gameEngine::SendACK(int msgId) {
 	OutputMemoryStream oms;
 	oms.Write((uint8_t)PacketType::ACK);
 	oms.Write((uint8_t)msgId);
-	
-	//Packet p2Send;
-	//p2Send << ACK << msgId;
 
 	socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, PORT);
 }

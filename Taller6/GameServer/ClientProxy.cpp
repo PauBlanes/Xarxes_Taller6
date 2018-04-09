@@ -5,6 +5,7 @@ ClientProxy::ClientProxy(IpAddress myIp, unsigned short myPort, POSITION pos, st
 	port = myPort;
 	position = pos;
 	nick = n;
+	numPing = 0;
 }
 
 bool ClientProxy::operator==(const ClientProxy& other) {
@@ -42,3 +43,6 @@ void ClientProxy::Send(UdpSocket* sock, char* buffer, int length) {
 	if (rnd > PERCENT_LOSS)
 		sock->send(buffer, length, ip, port);
 }
+
+
+
