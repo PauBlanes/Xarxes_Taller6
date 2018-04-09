@@ -1,12 +1,9 @@
 ﻿  gameEngine.cpp
 c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(26): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(27): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(162): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(221): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(230): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(246): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  Source.cpp
+c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(172): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(231): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(240): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\pblanes\documents\github\xarxes_taller6\taller6\gameclient\gameengine.cpp(256): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_Taller6\Taller6\x64\Debug\GameClient.exe
   GameClient.vcxproj -> C:\Users\pblanes\Documents\GitHub\Xarxes_Taller6\Taller6\x64\Debug\GameClient.pdb (Partial PDB)

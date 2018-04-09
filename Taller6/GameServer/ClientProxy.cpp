@@ -13,18 +13,24 @@ bool ClientProxy::operator==(const ClientProxy& other) {
 	return false;
 }
 void ClientProxy::ResendMsgs(UdpSocket* sock) {
-	for each (Packet p in unrespondedMsgs)
-	{
-		sock->send(p, ip, port);
+	Time currTime = resendClock.getElapsedTime();
+	if (currTime.asMilliseconds() >  RESEND_TIME && !unrespondedMsgs.empty()) {		
+		for each (Packet p in unrespondedMsgs)
+		{
+			cout << "resending msgs to " << ip << ":" << port << endl;
+			sock->send(p, ip, port);
+		}
+		resendClock.restart();
 	}
+	
 }
-void ClientProxy::CheckACK(int idToErase) {
+void ClientProxy::MesageResponded(int idToErase) {
 	for (int i = 0; i < unrespondedMsgs.size(); i++) {
 		Packet currPacket = unrespondedMsgs[i];
 		int pType;
 		int id;
 		currPacket >> pType >> id;
-		if (id == idToErase) {
+		if (id == idToErase) { //borrem el misatge amb id que li hem passat
 			unrespondedMsgs.erase(unrespondedMsgs.begin() + i);
 			return;
 		}

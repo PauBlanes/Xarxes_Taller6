@@ -3,6 +3,7 @@
 #include <SFML\Network.hpp>
 #include "ClientProxy.h"
 #include "GeneralInfo.h"
+#include "InputMemoryStream.h"
 
 using namespace sf;
 using namespace std;
@@ -35,24 +36,18 @@ int main()
 
 	socket.setBlocking(false);	
 
-	Clock clock;
+	
 	//Bucle del joc
 	while (true) {
 		
 		//Comprobamos receive
 		ReceiveCommands();
 
-		//Esperar 200ms i enviar misatges pendents
-		Time currTime = clock.getElapsedTime();
-		if (currTime.asMilliseconds() >  200) {			
-			cout << "resending msgs" << endl;
-			for each (ClientProxy cP in clients)
-			{
-				cP.ResendMsgs(&socket);
-			}
-			clock.restart();
-		}
-		
+		//La propia funcio dels clients ja controla que ha d'enviar cada 200 ms
+		for each (ClientProxy cP in clients)
+		{
+			cP.ResendMsgs(&socket);
+		}	
 		
 	}
 
@@ -64,18 +59,29 @@ void ReceiveCommands() {
 	Packet rPack;
 	IpAddress ipAddr;
 	unsigned short newPort;
-	if (socket.receive(rPack, ipAddr, newPort) == sf::Socket::Done) {		
-		int intCmd;
-		rPack >> intCmd;
-		PacketType cmd = (PacketType)intCmd;
+
+	char rMsg[100];	
+	size_t received;
+
+	//if (socket.receive(rPack, ipAddr, newPort) == sf::Socket::Done) {
+	if (socket.receive(rMsg, 100, received, ipAddr, newPort) == sf::Socket::Done) {
+		
+		InputMemoryStream ims(rMsg, received);
+		PacketType cmd;
+		ims.Read(&cmd);
+		
+		//int intCmd;
+		//rPack >> intCmd;
+		//PacketType cmd = (PacketType)intCmd;
 		
 		switch (cmd)
 		{		
 		case HELLO:
 		{
-			string n;
+			cout << "es bien" << endl;
+			/*string n;
 			rPack >> n;
-			AddClientIfNew(ClientProxy(ipAddr, newPort, { posIndex, posIndex }, n));
+			AddClientIfNew(ClientProxy(ipAddr, newPort, { posIndex, posIndex }, n));*/
 			break;
 		}
 		case ACK:
@@ -84,7 +90,7 @@ void ReceiveCommands() {
 			rPack >> msgId;
 			
 			//borrem el missatge amb aquest id de la llista de msg que esperen ack
-			FindClient(ipAddr, newPort).CheckACK(msgId);
+			FindClient(ipAddr, newPort).MesageResponded(msgId);
 			
 			break;
 		default:
@@ -99,14 +105,13 @@ void ReceiveCommands() {
 void SendCommands(ClientProxy client2Send, PacketType cmd2Send) {
 	
 	//FER RANDOM PER NOMES ENVIAR A VEGADES
-	
 	Packet pack2Send;
 	
 	switch (cmd2Send) {
 	case WC:
 		cout << "envio welcome a " << client2Send.nick << client2Send.ip << ":" << client2Send.port << endl;
 		pack2Send << WC;
-
+		
 		//afegim la nostra pos
 		int newX, newY;
 		pack2Send << client2Send.position.x << client2Send.position.y;

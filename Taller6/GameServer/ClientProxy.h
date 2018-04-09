@@ -1,6 +1,9 @@
 #pragma once
 #include <SFML\Network.hpp>
+#include <iostream>
 #include "GeneralInfo.h"
+
+#define RESEND_TIME 500
 
 using namespace sf;
 using namespace std;
@@ -12,7 +15,8 @@ struct POSITION
 
 class ClientProxy {
 private:
-	vector<Packet>unrespondedMsgs;	
+	vector<Packet>unrespondedMsgs;
+	Clock resendClock;
 public:
 	POSITION position;
 	IpAddress ip;	
@@ -21,5 +25,5 @@ public:
 	ClientProxy(IpAddress myIp, unsigned short myPort, POSITION pos, string n);
 	bool operator==(const ClientProxy& other);
 	void ResendMsgs(UdpSocket* sock);
-	void CheckACK(int id);
+	void MesageResponded(int id);
 };

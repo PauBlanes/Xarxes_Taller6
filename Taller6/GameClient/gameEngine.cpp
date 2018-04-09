@@ -47,12 +47,16 @@ gameEngine::gameEngine()
 	cin >> nick;
 
 	IpAddress ip = IpAddress::getLocalAddress();
-	Packet helloPacket;
-	helloPacket << HELLO;
-	helloPacket << nick;
+	//Packet helloPacket;
+	//helloPacket << HELLO;
+	//helloPacket << nick;
+	OutputMemoryStream oms;
+	oms.Write((uint8_t)PacketType::HELLO);
+	oms.WriteString(nick);
 	socket.setBlocking(false);
 
-	socket.send(helloPacket, ip, 50000);
+	socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, 50000);
+	//socket.send(helloPacket, ip, 50000);
 	Clock clock;
 	clock.restart();
 	//Bucle del joc
@@ -64,7 +68,9 @@ gameEngine::gameEngine()
 		//Si han passat 500 ms tornem a enviar missatge hello		
 		Time currTime = clock.getElapsedTime();
 		if (currTime.asMilliseconds() >  500) {
-			socket.send(helloPacket, ip, 50000);
+			
+			socket.send(oms.GetBufferPtr(), oms.GetLength(), ip, 50000);
+			//socket.send(helloPacket, ip, 50000);
 			cout << "sending hello again" << endl;
 			clock.restart();
 		}		

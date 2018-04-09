@@ -21,5 +21,11 @@
     <ClInclude Include="GeneralInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InputMemoryStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OutputMemoryStream.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
