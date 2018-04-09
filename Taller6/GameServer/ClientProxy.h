@@ -2,8 +2,10 @@
 #include <SFML\Network.hpp>
 #include <iostream>
 #include "GeneralInfo.h"
+#include <time.h> 
 
 #define RESEND_TIME 500
+#define PERCENT_LOSS 25
 
 using namespace sf;
 using namespace std;
@@ -33,4 +35,5 @@ public:
 	void ResendMsgs(UdpSocket* sock);
 	void MesageResponded(int id);
 	void Send(UdpSocket* sock, char* buffer, int length);
+	float GetRandomFloat();
 };

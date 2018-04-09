@@ -35,5 +35,10 @@ void ClientProxy::MesageResponded(int idToErase) {
 }
 
 void ClientProxy::Send(UdpSocket* sock, char* buffer, int length) {
-	sock->send(buffer, length, ip, port);
+	
+	srand(time(NULL));
+	int rnd = rand() % 100 + 1;
+
+	if (rnd > PERCENT_LOSS)
+		sock->send(buffer, length, ip, port);
 }
